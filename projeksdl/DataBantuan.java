@@ -1,8 +1,14 @@
 package com.mycompany.projeksdl;
 
 public class DataBantuan {
-    private Penduduk[] daftarPenduduk = new Penduduk[100];
-    private int jumlahPenduduk = 0;
+
+    private Penduduk[] daftarPenduduk;
+    private int jumlahPenduduk;
+
+    public DataBantuan() {
+        daftarPenduduk = new Penduduk[100];
+        jumlahPenduduk = 0;
+    }
 
     public int getJumlahPenduduk() {
         return jumlahPenduduk;
@@ -16,38 +22,37 @@ public class DataBantuan {
     }
 
     public boolean tambahPenduduk(Penduduk p) {
-        if (jumlahPenduduk >= daftarPenduduk.length) {
-            System.out.println("Data penduduk sudah penuh!");
-            return false;
+        if (jumlahPenduduk < daftarPenduduk.length) {
+            daftarPenduduk[jumlahPenduduk] = p;
+            jumlahPenduduk++;
+            return true;
         }
-        // Cek duplikat NIK
-        for (int i = 0; i < jumlahPenduduk; i++) {
-            if (daftarPenduduk[i].getNik().equals(p.getNik())) {
-                System.out.println("NIK sudah ada!");
-                return false;
-            }
-        }
-        daftarPenduduk[jumlahPenduduk++] = p;
-        return true;
+        return false; // array penuh
     }
 
     public boolean hapusPendudukByNIK(String nik) {
+        int index = -1;
         for (int i = 0; i < jumlahPenduduk; i++) {
             if (daftarPenduduk[i].getNik().equals(nik)) {
-                // Geser kiri
-                for (int j = i; j < jumlahPenduduk - 1; j++) {
-                    daftarPenduduk[j] = daftarPenduduk[j + 1];
-                }
-                daftarPenduduk[--jumlahPenduduk] = null;
-                return true;
+                index = i;
+                break;
             }
         }
-        return false;
+        if (index == -1) {
+            return false;
+        }
+
+        for (int i = index; i < jumlahPenduduk - 1; i++) {
+            daftarPenduduk[i] = daftarPenduduk[i + 1];
+        }
+        daftarPenduduk[jumlahPenduduk - 1] = null;
+        jumlahPenduduk--;
+        return true;
     }
 
     public void sortByNama() {
         for (int i = 0; i < jumlahPenduduk - 1; i++) {
-            for (int j = 0; j < jumlahPenduduk - i - 1; j++) {
+            for (int j = 0; j < jumlahPenduduk - 1 - i; j++) {
                 if (daftarPenduduk[j].compareTo(daftarPenduduk[j + 1]) > 0) {
                     Penduduk temp = daftarPenduduk[j];
                     daftarPenduduk[j] = daftarPenduduk[j + 1];
@@ -58,69 +63,78 @@ public class DataBantuan {
     }
 
     public int binarySearchByNama(String nama) {
-        int low = 0, high = jumlahPenduduk - 1;
-        nama = nama.toLowerCase();
-        while (low <= high) {
-            int mid = (low + high) / 2;
-            String namaMid = daftarPenduduk[mid].getNama().toLowerCase();
-            int cmp = namaMid.compareTo(nama);
+        int left = 0, right = jumlahPenduduk - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            int cmp = daftarPenduduk[mid].getNama().compareToIgnoreCase(nama);
             if (cmp == 0) {
                 return mid;
             } else if (cmp < 0) {
-                low = mid + 1;
+                left = mid + 1;
             } else {
-                high = mid - 1;
+                right = mid - 1;
             }
         }
         return -1;
     }
 
     public void tampilkanSemua() {
-        if (jumlahPenduduk == 0) {
-            System.out.println("Data kosong.");
-            return;
-        }
+        cetakHeaderTabel();
         for (int i = 0; i < jumlahPenduduk; i++) {
-            System.out.println(daftarPenduduk[i]);
+            daftarPenduduk[i].tampilkanData();
         }
+        cetakFooterTabel();
     }
 
     public void tampilkanSudahMenerima() {
-        boolean found = false;
+        cetakHeaderTabel();
+        boolean ada = false;
         for (int i = 0; i < jumlahPenduduk; i++) {
             if (daftarPenduduk[i].isSudahMenerimaBantuan()) {
-                System.out.println(daftarPenduduk[i]);
-                found = true;
+                daftarPenduduk[i].tampilkanData();
+                ada = true;
             }
         }
-        if (!found) {
-            System.out.println("Tidak ada penduduk yang sudah menerima bantuan.");
+        if (!ada) {
+            System.out.println("|           Tidak ada penduduk yang sudah menerima bantuan          |");
         }
+        cetakFooterTabel();
     }
 
     public void tampilkanBelumMenerima() {
-        boolean found = false;
+        cetakHeaderTabel();
+        boolean ada = false;
         for (int i = 0; i < jumlahPenduduk; i++) {
             if (!daftarPenduduk[i].isSudahMenerimaBantuan()) {
-                System.out.println(daftarPenduduk[i]);
-                found = true;
+                daftarPenduduk[i].tampilkanData();
+                ada = true;
             }
         }
-        if (!found) {
-            System.out.println("Tidak ada penduduk yang belum menerima bantuan.");
+        if (!ada) {
+            System.out.println("|          Semua penduduk sudah menerima bantuan                    |");
+        }
+        cetakFooterTabel();
+    }
+    
+    public boolean editPendudukByNIK(String nik, String namaBaru, String alamatBaru, boolean statusBantuanBaru) {
+    for (int i = 0; i < jumlahPenduduk; i++) {
+        if (daftarPenduduk[i].getNik().equals(nik)) {
+            daftarPenduduk[i] = new Penduduk(nik, namaBaru, alamatBaru, statusBantuanBaru);
+            return true;
         }
     }
-
-    // Method baru: update data penduduk berdasarkan NIK
-    public boolean updatePendudukByNIK(String nik, String alamatBaru, boolean sudahMenerimaBaru) {
-        for (int i = 0; i < jumlahPenduduk; i++) {
-            if (daftarPenduduk[i].getNik().equals(nik)) {
-                daftarPenduduk[i].setAlamat(alamatBaru);
-                daftarPenduduk[i].setSudahMenerimaBantuan(sudahMenerimaBaru);
-                return true;
-            }
-        }
-        return false;
-    }
+    return false;
 }
 
+    
+
+    public void cetakHeaderTabel() {
+        System.out.println("+------------------+----------------------+----------------------+--------+");
+        System.out.println("| NIK              | Nama                 | Alamat               | Status |");
+        System.out.println("+------------------+----------------------+----------------------+--------+");
+    }
+
+    public void cetakFooterTabel() {
+        System.out.println("+------------------+----------------------+----------------------+--------+");
+    }
+}
