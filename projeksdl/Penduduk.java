@@ -1,8 +1,8 @@
 package com.mycompany.projeksdl;
 
 public class Penduduk implements Comparable<Penduduk> {
-    private String nik;
-    private String nama;
+    private final String nik;
+    private final String nama;
     private String alamat;
     private boolean sudahMenerimaBantuan;
 
@@ -33,18 +33,17 @@ public class Penduduk implements Comparable<Penduduk> {
         return sudahMenerimaBantuan;
     }
 
-    public void setSudahMenerimaBantuan(boolean sudahMenerimaBantuan) {
-        this.sudahMenerimaBantuan = sudahMenerimaBantuan;
+    public void setSudahMenerimaBantuan(boolean status) {
+        this.sudahMenerimaBantuan = status;
+    }
+
+    public void tampilkanData() {
+        System.out.printf("| %-16s | %-20s | %-20s | %-6s |\n",
+                nik, nama, alamat, (sudahMenerimaBantuan ? "Sudah" : "Belum"));
     }
 
     @Override
     public int compareTo(Penduduk other) {
         return this.nama.compareToIgnoreCase(other.nama);
-    }
-
-    @Override
-    public String toString() {
-        return "NIK: " + nik + ", Nama: " + nama + ", Alamat: " + alamat +
-                ", Sudah Menerima: " + (sudahMenerimaBantuan ? "Ya" : "Belum");
     }
 }
