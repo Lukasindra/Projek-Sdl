@@ -30,10 +30,10 @@ public class DataBantuan {
         return false; // array penuh
     }
 
-    public boolean hapusPendudukByNIK(String nik) {
+    public boolean hapusPendudukByNoKK(String noKK) {
         int index = -1;
         for (int i = 0; i < jumlahPenduduk; i++) {
-            if (daftarPenduduk[i].getNik().equals(nik)) {
+            if (daftarPenduduk[i].getNoKK().equals(noKK)) {
                 index = i;
                 break;
             }
@@ -115,26 +115,24 @@ public class DataBantuan {
         }
         cetakFooterTabel();
     }
-    
-    public boolean editPendudukByNIK(String nik, String namaBaru, String alamatBaru, boolean statusBantuanBaru) {
-    for (int i = 0; i < jumlahPenduduk; i++) {
-        if (daftarPenduduk[i].getNik().equals(nik)) {
-            daftarPenduduk[i] = new Penduduk(nik, namaBaru, alamatBaru, statusBantuanBaru);
-            return true;
-        }
-    }
-    return false;
-}
 
-    
+    public boolean editPendudukByNoKK(String noKK, String namaBaru, String alamatBaru, boolean statusBaru, String jenisBansosBaru) {
+        for (int i = 0; i < jumlahPenduduk; i++) {
+            if (daftarPenduduk[i].getNoKK().equals(noKK)) {
+                daftarPenduduk[i] = new Penduduk(noKK, namaBaru, alamatBaru, statusBaru, jenisBansosBaru);
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void cetakHeaderTabel() {
-        System.out.println("+------------------+----------------------+----------------------+--------+");
-        System.out.println("| NIK              | Nama                 | Alamat               | Status |");
-        System.out.println("+------------------+----------------------+----------------------+--------+");
+        System.out.println("+------------------+----------------------+----------------------+--------+------------+");
+        System.out.println("| No KK            | Nama                 | Alamat               | Status | Jenis Bansos |");
+        System.out.println("+------------------+----------------------+----------------------+--------+------------+");
     }
 
     public void cetakFooterTabel() {
-        System.out.println("+------------------+----------------------+----------------------+--------+");
+        System.out.println("+------------------+----------------------+----------------------+--------+------------+");
     }
 }
