@@ -69,13 +69,12 @@ public class MainProgram {
     }
 
     private static void tambahPenduduk() {
-        System.out.print("Masukkan NIK: ");
-        String nik = input.nextLine();
+        System.out.print("Masukkan No KK: ");
+        String noKK = input.nextLine();
 
-        // Cek duplikat NIK
         for (int i = 0; i < dataBantuan.getJumlahPenduduk(); i++) {
-            if (dataBantuan.getPenduduk(i).getNik().equals(nik)) {
-                System.out.println("NIK sudah terdaftar, tidak bisa tambah data.");
+            if (dataBantuan.getPenduduk(i).getNoKK().equals(noKK)) {
+                System.out.println("No KK sudah terdaftar, tidak bisa tambah data.");
                 return;
             }
         }
@@ -90,7 +89,10 @@ public class MainProgram {
         String status = input.nextLine().trim().toLowerCase();
         boolean sudahMenerima = status.equals("sudah") || status.equals("y");
 
-        Penduduk p = new Penduduk(nik, nama, alamat, sudahMenerima);
+        System.out.print("Masukkan Jenis Bansos (BLT/PKH/BNPT/etc): ");
+        String jenisBansos = input.nextLine();
+
+        Penduduk p = new Penduduk(noKK, nama, alamat, sudahMenerima, jenisBansos);
         if (dataBantuan.tambahPenduduk(p)) {
             System.out.println("Penduduk berhasil ditambahkan.");
         } else {
@@ -99,13 +101,13 @@ public class MainProgram {
     }
 
     private static void hapusPenduduk() {
-        System.out.print("Masukkan NIK penduduk yang ingin dihapus: ");
-        String nik = input.nextLine();
+        System.out.print("Masukkan No KK penduduk yang ingin dihapus: ");
+        String noKK = input.nextLine();
 
-        if (dataBantuan.hapusPendudukByNIK(nik)) {
-            System.out.println("Penduduk dengan NIK " + nik + " berhasil dihapus.");
+        if (dataBantuan.hapusPendudukByNoKK(noKK)) {
+            System.out.println("Penduduk dengan No KK " + noKK + " berhasil dihapus.");
         } else {
-            System.out.println("Penduduk dengan NIK " + nik + " tidak ditemukan.");
+            System.out.println("Penduduk dengan No KK " + noKK + " tidak ditemukan.");
         }
     }
 
@@ -132,7 +134,7 @@ public class MainProgram {
 
         Penduduk target = null;
         for (int i = 0; i < dataBantuan.getJumlahPenduduk(); i++) {
-            if (dataBantuan.getPenduduk(i).getNik().equals(nik)) {
+            if (dataBantuan.getPenduduk(i).getNoKK().equals(nik)) {
                 target = dataBantuan.getPenduduk(i);
                 break;
             }
@@ -148,13 +150,24 @@ public class MainProgram {
         target.tampilkanData();
         dataBantuan.cetakFooterTabel();
 
-        System.out.println("Pilih data yang ingin diedit:");
-        System.out.println("1. Alamat");
-        System.out.println("2. Status Bantuan");
-        System.out.println("3. Keduanya");
-        System.out.print("Pilihan: ");
-        String pilihan = input.nextLine();
+        String pilihan;
 
+        while (true) {
+            System.out.println("Pilih data yang ingin diedit:");
+            System.out.println("1. Alamat");
+            System.out.println("2. Status Bantuan");
+            System.out.println("3. Keduanya");
+            System.out.print("Pilihan: ");
+            pilihan = input.nextLine();
+
+            if (pilihan.equals("1") || pilihan.equals("2") || pilihan.equals("3")) {
+                break; // keluar dari loop jika input valid
+            } else {
+                System.out.println("Pilihan tidak valid. Silakan pilih 1, 2, atau 3.\n");
+            }
+        }
+
+// Proses edit setelah input valid
         if (pilihan.equals("1") || pilihan.equals("3")) {
             System.out.print("Masukkan alamat baru: ");
             String alamatBaru = input.nextLine();
@@ -162,19 +175,33 @@ public class MainProgram {
         }
 
         if (pilihan.equals("2") || pilihan.equals("3")) {
-            System.out.print("Status bantuan baru (Sudah/Belum): ");
-            String status = input.nextLine().trim().toLowerCase();
-            boolean sudahMenerima = status.equals("sudah") || status.equals("y");
+            String status;
+            boolean sudahMenerima = false;
+            while (true) {
+                System.out.print("Status bantuan baru (Sudah/Belum): ");
+                status = input.nextLine().trim().toLowerCase();
+
+                if (status.equals("sudah") || status.equals("y")) {
+                    sudahMenerima = true;
+                    break;
+                } else if (status.equals("belum") || status.equals("n")) {
+                    sudahMenerima = false;
+                    break;
+                } else {
+                    System.out.println("Input tidak valid. Masukkan hanya 'Sudah' atau 'Belum'.");
+                }
+            }
             target.setSudahMenerimaBantuan(sudahMenerima);
         }
 
         System.out.println("Data berhasil diperbarui.");
+
     }
 
     private static void preloadData() {
-        dataBantuan.tambahPenduduk(new Penduduk("1234567890123456", "Budi Santoso", "Jl. Merdeka No.1", true));
-        dataBantuan.tambahPenduduk(new Penduduk("2345678901234567", "Siti Aminah", "Jl. Melati No.2", false));
-        dataBantuan.tambahPenduduk(new Penduduk("3456789012345678", "Andi Wijaya", "Jl. Kenanga No.3", true));
-        dataBantuan.tambahPenduduk(new Penduduk("4567890123456789", "Dewi Lestari", "Jl. Mawar No.4", false));
+        dataBantuan.tambahPenduduk(new Penduduk("1234567890123456", "Budi Santoso", "Jl. Merdeka No.1", true, "BLT"));
+        dataBantuan.tambahPenduduk(new Penduduk("2345678901234567", "Siti Aminah", "Jl. Melati No.2", false, "PKH"));
+        dataBantuan.tambahPenduduk(new Penduduk("3456789012345678", "Andi Wijaya", "Jl. Kenanga No.3", true, "BNPT"));
+        dataBantuan.tambahPenduduk(new Penduduk("4567890123456789", "Dewi Lestari", "Jl. Mawar No.4", false, "PKH"));
     }
 }
