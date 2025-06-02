@@ -13,7 +13,7 @@ public class MainProgram {
         boolean running = true;
         while (running) {
             tampilkanMenu();
-            System.out.print("Pilih menu (1-7): ");
+            System.out.print("Pilih menu (1-8): ");
             String pilihan = input.nextLine();
 
             switch (pilihan) {
@@ -59,7 +59,7 @@ public class MainProgram {
     private static void tampilkanMenu() {
         System.out.println("===== Program Data Bantuan Sosial =====");
         System.out.println("1. Tambah Penduduk");
-        System.out.println("2. Hapus Penduduk berdasarkan NIK");
+        System.out.println("2. Hapus Penduduk berdasarkan No KK");
         System.out.println("3. Cari Penduduk berdasarkan Nama");
         System.out.println("4. Urutkan Data Penduduk berdasarkan Nama");
         System.out.println("5. Tampilkan Semua Data Penduduk");
@@ -129,19 +129,19 @@ public class MainProgram {
     }
 
     private static void editDataPenduduk() {
-        System.out.print("Masukkan NIK penduduk yang ingin diedit: ");
-        String nik = input.nextLine();
+        System.out.print("Masukkan No KK penduduk yang ingin diedit: ");
+        String noKK = input.nextLine();
 
         Penduduk target = null;
         for (int i = 0; i < dataBantuan.getJumlahPenduduk(); i++) {
-            if (dataBantuan.getPenduduk(i).getNoKK().equals(nik)) {
+            if (dataBantuan.getPenduduk(i).getNoKK().equals(noKK)) {
                 target = dataBantuan.getPenduduk(i);
                 break;
             }
         }
 
         if (target == null) {
-            System.out.println("Penduduk dengan NIK tersebut tidak ditemukan.");
+            System.out.println("Penduduk dengan No KK tersebut tidak ditemukan.");
             return;
         }
 
@@ -156,31 +156,29 @@ public class MainProgram {
             System.out.println("Pilih data yang ingin diedit:");
             System.out.println("1. Alamat");
             System.out.println("2. Status Bantuan");
-            System.out.println("3. Keduanya");
+            System.out.println("3. Jenis Bansos");
+            System.out.println("4. Semua (Alamat, Status Bantuan, Jenis Bansos)");
             System.out.print("Pilihan: ");
             pilihan = input.nextLine();
 
-            if (pilihan.equals("1") || pilihan.equals("2") || pilihan.equals("3")) {
-                break; // keluar dari loop jika input valid
+            if (pilihan.equals("1") || pilihan.equals("2") || pilihan.equals("3") || pilihan.equals("4")) {
+                break;
             } else {
-                System.out.println("Pilihan tidak valid. Silakan pilih 1, 2, atau 3.\n");
+                System.out.println("Pilihan tidak valid. Silakan pilih 1, 2, 3, atau 4.\n");
             }
         }
 
-// Proses edit setelah input valid
-        if (pilihan.equals("1") || pilihan.equals("3")) {
+        if (pilihan.equals("1") || pilihan.equals("4")) {
             System.out.print("Masukkan alamat baru: ");
             String alamatBaru = input.nextLine();
             target.setAlamat(alamatBaru);
         }
 
-        if (pilihan.equals("2") || pilihan.equals("3")) {
-            String status;
-            boolean sudahMenerima = false;
+        if (pilihan.equals("2") || pilihan.equals("4")) {
+            boolean sudahMenerima;
             while (true) {
                 System.out.print("Status bantuan baru (Sudah/Belum): ");
-                status = input.nextLine().trim().toLowerCase();
-
+                String status = input.nextLine().trim().toLowerCase();
                 if (status.equals("sudah") || status.equals("y")) {
                     sudahMenerima = true;
                     break;
@@ -188,14 +186,19 @@ public class MainProgram {
                     sudahMenerima = false;
                     break;
                 } else {
-                    System.out.println("Input tidak valid. Masukkan hanya 'Sudah' atau 'Belum'.");
+                    System.out.println("Input tidak valid. Silakan ketik 'Sudah' atau 'Belum'.");
                 }
             }
             target.setSudahMenerimaBantuan(sudahMenerima);
         }
 
-        System.out.println("Data berhasil diperbarui.");
+        if (pilihan.equals("3") || pilihan.equals("4")) {
+            System.out.print("Masukkan jenis bansos baru: ");
+            String jenisBansosBaru = input.nextLine();
+            target.setJenisBansos(jenisBansosBaru);
+        }
 
+        System.out.println("Data penduduk berhasil diperbarui.");
     }
 
     private static void preloadData() {
