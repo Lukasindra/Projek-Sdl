@@ -51,15 +51,32 @@ public class DataBantuan {
     }
 
     public void sortByNama() {
-        for (int i = 0; i < jumlahPenduduk - 1; i++) {
-            for (int j = 0; j < jumlahPenduduk - 1 - i; j++) {
-                if (daftarPenduduk[j].compareTo(daftarPenduduk[j + 1]) > 0) {
-                    Penduduk temp = daftarPenduduk[j];
-                    daftarPenduduk[j] = daftarPenduduk[j + 1];
-                    daftarPenduduk[j + 1] = temp;
-                }
+        quickSort(0, jumlahPenduduk - 1);
+    }
+
+    private void quickSort(int low, int high) {
+        if (low < high) {
+            int pi = partition(low, high);
+            quickSort(low, pi - 1);
+            quickSort(pi + 1, high);
+        }
+    }
+
+    private int partition(int low, int high) {
+        Penduduk pivot = daftarPenduduk[high];
+        int i = low - 1;
+        for (int j = low; j < high; j++) {
+            if (daftarPenduduk[j].compareTo(pivot) <= 0) {
+                i++;
+                Penduduk temp = daftarPenduduk[i];
+                daftarPenduduk[i] = daftarPenduduk[j];
+                daftarPenduduk[j] = temp;
             }
         }
+        Penduduk temp = daftarPenduduk[i + 1];
+        daftarPenduduk[i + 1] = daftarPenduduk[high];
+        daftarPenduduk[high] = temp;
+        return i + 1;
     }
 
     public int binarySearchByNama(String nama) {
